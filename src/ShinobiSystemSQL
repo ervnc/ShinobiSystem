@@ -1,0 +1,94 @@
+create database shinobisystem;
+
+use shinobisystem;
+
+create table personagem(
+nome varchar(40),
+sexo char(1),
+data_nascimento date,
+tipo_sanguineo varchar(3),
+peso double,
+altura double,
+ocupacao varchar(30),
+primary key(nome));
+
+create table frase_personagem(
+nome_personagem varchar(40),
+texto varchar(100),
+ocasiao varchar(100),
+primary key(nome_personagem, texto, ocasiao),
+foreign key(nome_personagem) references personagem(nome));
+
+create table time(
+numero integer,
+quantidade_membros integer,
+nome varchar(40),
+ep_criacao integer,
+primary key(numero));
+
+create table ninja(
+nome_personagem varchar(40),
+patente varchar(10),
+titulo varchar(20),
+primary key(nome_personagem),
+foreign key(nome_personagem) references personagem(nome));
+
+create table transformacao_natureza_ninja(
+nome_personagem varchar(40),
+transformacao_natureza varchar(50),
+primary key(nome_personagem, transformacao_natureza),
+foreign key(nome_personagem) references ninja(nome_personagem));
+
+create table ninja_participa_time(
+nome_personagem varchar(40),
+numero_time integer,
+funcao varchar(15),
+ep_ingresso integer,
+ep_saida integer,
+primary key(nome_personagem, numero_time),
+foreign key(numero_time) references time(numero),
+foreign key(nome_personagem) references ninja(nome_personagem));
+
+create table missao(
+numero_time integer,
+objetivo varchar(50),
+ep_inicio integer,
+ep_fim integer,
+ranking char(1),
+tipo varchar(50),
+resultado varchar(10),
+primary key(numero_time, objetivo, ep_inicio, ep_fim),
+foreign key(numero_time) references time(numero));
+
+create table obstaculo_missao(
+numero_time integer,
+objetivo_missao varchar(50),
+ep_inicio_missao integer,
+ep_fim_missao integer,
+obstaculo varchar(50),
+primary key(numero_time, objetivo_missao, ep_inicio_missao, ep_fim_missao, obstaculo),
+foreign key(numero_time, objetivo_missao) references missao(numero_time, objetivo));
+
+create table jutsu(
+nome varchar(40),
+alcance varchar(5),
+numero_time integer,
+primary key(nome),
+foreign key(numero_time) references time(numero));
+
+create table ninja_possui_jutsu(
+nome_personagem varchar(40),
+nome_jutsu varchar(40),
+primary key(nome_personagem, nome_jutsu),
+foreign key(nome_personagem) references ninja(nome_personagem),
+foreign key(nome_jutsu) references jutsu(nome));
+
+create table missao_possui_jutsu(
+numero_time integer,
+objetivo_missao varchar(50),
+ep_inicio_missao integer,
+ep_fim_missao integer,
+nome_jutsu varchar(40),
+primary key(numero_time, objetivo_missao, ep_inicio_missao, ep_fim_missao, nome_jutsu),
+foreign key(numero_time, objetivo_missao, ep_inicio_missao, ep_fim_missao) references missao(numero_time, objetivo, ep_inicio, ep_fim),
+foreign key(nome_jutsu) references jutsu(nome));
